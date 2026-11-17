@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vida Sem Roteiro — Simulador de Vida Real</title>
+<style>
+:root{--bg:#0b1020;--panel:#131b2e;--panel2:#19243a;--line:#293650;--text:#edf2fb;--muted:#9eabc1;--accent:#70d6b1;--blue:#79a9ff;--red:#ff7f87;--gold:#f3c969}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#172540 0%,var(--bg) 58%);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+header{padding:22px max(18px,calc((100% - 1180px)/2));border-bottom:1px solid #ffffff12;background:#0b1020bb;display:flex;align-items:center;justify-content:space-between;gap:15px;position:sticky;top:0;z-index:5;backdrop-filter:blur(12px)}
+.brand{display:flex;gap:12px;align-items:center}.logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#70d6b1,#79a9ff);display:grid;place-items:center;color:#081321;font-size:22px;font-weight:900}.brand h1{font-size:17px;margin:0;letter-spacing:.3px}.brand small{color:var(--muted)}
+button{border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;transition:.15s}button:hover{transform:translateY(-1px);filter:brightness(1.08)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}.primary{background:var(--accent);color:#092018}.secondary{background:#263550;color:var(--text);border:1px solid var(--line)}.danger{background:#492630;color:#ffd9dc;border:1px solid #78404c}
+.wrap{max-width:1180px;margin:26px auto;padding:0 18px}.intro{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:20px}.eyebrow{color:var(--accent);font-size:11px;font-weight:800;letter-spacing:1.7px;text-transform:uppercase}.intro h2{font-size:clamp(24px,4vw,34px);margin:4px 0}.intro p{color:var(--muted);margin:0;max-width:650px}.grid{display:grid;grid-template-columns:310px minmax(0,1fr);gap:18px;align-items:start}.card{background:linear-gradient(160deg,#172239,#111a2b);border:1px solid var(--line);border-radius:17px;padding:18px;box-shadow:0 14px 40px #0002}.card h3{font-size:14px;margin:0 0 14px;letter-spacing:.3px}.profile{display:flex;gap:13px;align-items:center;margin-bottom:17px}.avatar{width:52px;height:52px;border-radius:16px;background:#263b57;display:grid;place-items:center;font-size:25px}.profile strong{display:block;font-size:17px}.profile span{color:var(--muted);font-size:12px}.money{background:#0d1828;border:1px solid #2c4653;border-radius:13px;padding:13px;margin-bottom:16px}.money small{color:var(--muted)}.money strong{display:block;color:var(--accent);font-size:25px;margin-top:2px}.stat{margin:12px 0}.statline{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px}.statline span:last-child{color:var(--muted)}.bar{height:7px;background:#29354b;border-radius:20px;overflow:hidden}.fill{height:100%;border-radius:20px;background:var(--accent);transition:width .25s}.fill.blue{background:var(--blue)}.fill.gold{background:var(--gold)}.fill.red{background:var(--red)}.meta{display:grid;grid-template-columns:1fr 1fr;gap:9px}.meta div{background:#0e1728;border:1px solid #25334a;border-radius:10px;padding:9px}.meta small{display:block;color:var(--muted);font-size:11px}.meta b{font-size:13px}.maincol{display:grid;gap:18px}.topline{display:flex;align-items:center;justify-content:space-between;gap:12px}.date{font-weight:800;font-size:17px}.time{color:var(--accent);font-variant-numeric:tabular-nums;font-size:20px;font-weight:800}.location{color:var(--muted);font-size:12px}.scene{font-size:15px;line-height:1.7;color:#dce5f3;min-height:76px}.scene strong{color:#fff}.choices{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}.choice{background:#202e47;color:var(--text);border:1px solid #354766;text-align:left;font-weight:600;padding:12px}.choice:hover{border-color:var(--accent)}.custom{display:flex;gap:8px;margin-top:12px}.custom input{flex:1;min-width:0;background:#0c1525;border:1px solid #30405b;border-radius:10px;padding:12px;color:var(--text);outline:none}.custom input:focus{border-color:var(--accent)}.log{max-height:300px;overflow:auto;display:flex;flex-direction:column;gap:10px}.entry{border-left:2px solid #4b668b;padding:2px 0 3px 12px;color:#cbd6e6;font-size:13px}.entry time{color:var(--accent);font-weight:800;margin-right:7px}.entry.event{border-color:var(--gold)}.entry.bad{border-color:var(--red)}.entry.good{border-color:var(--accent)}.bottomgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.empty{color:var(--muted);font-size:13px}.person{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #ffffff12}.person:last-child{border:0}.person small{display:block;color:var(--muted)}.tag{font-size:10px;border-radius:20px;padding:4px 8px;background:#263750;color:#bcd1ed;height:max-content}.actions{display:flex;gap:8px;flex-wrap:wrap}.footer{text-align:center;color:#71809a;font-size:11px;padding:22px}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.intro{display:block}.intro .actions{margin-top:14px}.bottomgrid{grid-template-columns:1fr}}@media(max-width:480px){header{padding:13px 15px}.brand small{display:none}.choices{grid-template-columns:1fr}.wrap{margin:18px auto}.card{padding:15px}.time{font-size:17px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="brand"><div class="logo">V</div><div><h1>VIDA SEM ROTEIRO</h1><small>Simulador de vida real</small></div></div>
+ <div class="actions"><button class="secondary" id="saveBtn">Salvar</button><button class="secondary" id="loadBtn">Carregar</button><button class="danger" id="resetBtn">Recomeçar</button></div>
+</header>
+<div class="wrap">
+ <section class="intro"><div><div class="eyebrow">Sua história começa agora</div><h2>Uma vida. Infinitas possibilidades.</h2><p>Você controla Higor. O mundo continua em movimento, as pessoas têm suas próprias vidas e cada escolha pode trazer consequências.</p></div></section>
+ <div class="grid">
+  <aside class="card">
+   <h3>SEU PERSONAGEM</h3>
+   <div class="profile"><div class="avatar">👤</div><div><strong>Higor Felipe</strong><span>18 anos · Início da vida adulta</span></div></div>
+   <div class="money"><small>Saldo disponível</small><strong id="money">R$ 0,00</strong></div>
+   <div class="stat"><div class="statline"><b>Saúde</b><span id="healthText">100/100</span></div><div class="bar"><div class="fill" id="healthBar" style="width:100%"></div></div></div>
+   <div class="stat"><div class="statline"><b>Disposição</b><span id="energyText">85/100</span></div><div class="bar"><div class="fill blue" id="energyBar" style="width:85%"></div></div></div>
+   <div class="stat"><div class="statline"><b>Estresse</b><span id="stressText">10/100</span></div><div class="bar"><div class="fill gold" id="stressBar" style="width:10%"></div></div></div>
+   <div class="stat"><div class="statline"><b>Fome</b><span id="hungerText">25/100</span></div><div class="bar"><div class="fill gold" id="hungerBar" style="width:25%"></div></div></div>
+   <div class="meta"><div><small>Profissão</small><b id="job">Desempregado</b></div><div><small>Moradia</small><b>Casa da família</b></div><div><small>Estado civil</small><b>Solteiro</b></div><div><small>Escolaridade</small><b>Ensino médio</b></div></div>
+  </aside>
+  <main class="maincol">
+   <section class="card">
+    <div class="topline"><div><div class="date" id="date">Segunda-feira, 17 de novembro de 2026</div><div class="location" id="location">Casa da família · Curitiba, PR</div></div><div class="time" id="clock">08:00</div></div>
+    <hr style="border:0;border-top:1px solid #ffffff14;margin:15px 0">
+    <div class="scene" id="scene"></div>
+    <div class="choices" id="choices"></div>
+    <form class="custom" id="customForm"><input id="customInput" autocomplete="off" placeholder="O que Higor faz? Escreva uma ação..."><button type="submit" class="primary">Fazer</button></form>
+   </section>
+   <section class="card"><div class="topline"><h3>ACONTECIMENTOS</h3><span class="tag">Registro da vida</span></div><div class="log" id="log"></div></section>
+   <div class="bottomgrid">
+    <section class="card"><h3>PESSOAS IMPORTANTES</h3><div id="people"></div></section>
+    <section class="card"><h3>PRÓXIMOS COMPROMISSOS</h3><div id="tasks"></div></section>
+   </div>
+  </main>
+ </div>
+ <div class="footer">Simulador local demonstrativo · O progresso fica salvo neste navegador quando você clicar em “Salvar”.</div>
+</div>
+<script>
+const initial = () => ({
+ date:new Date(2026,10,17,8,0), money:0, health:100, energy:85, stress:10, hunger:25,
+ job:'Desempregado', location:'Casa da família · Curitiba, PR', scene:'É terça-feira, 17 de novembro de 2026, 8h. O ensino médio ficou para trás. A casa está relativamente tranquila. Da cozinha vem o barulho de louça; sua mãe, Renata, está preparando café antes de sair para resolver algumas coisas. Seu celular está sobre a cama. O dia está começando, e ainda não existe nenhum plano definido para o futuro.',
+ people:[
+  {name:'Renata',age:43,role:'Mãe · trabalha como auxiliar administrativa',relation:'Próxima'},
+  {name:'Marcos',age:46,role:'Pai · trabalha como motorista',relation:'Próxima'},
+  {name:'Lucas',age:16,role:'Irmão mais novo · estudante',relation:'Boa'},
+  {name:'Pedro',age:18,role:'Amigo da escola',relation:'Amigo'}
+ ],
+ tasks:[{text:'Nenhum compromisso marcado',when:'Agenda livre'}], log:[], first:true
+});
+let s=initial();
+const moneyFmt=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const days=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+const months=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+function dateText(d){return `${days[d.getDay()]}, ${d.getDate()} de ${months[d.getMonth()]} de ${d.getFullYear()}`}
+function addLog(text,type=''){s.log.unshift({time:s.date.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),text,type});if(s.log.length>45)s.log.pop()}
+function render(){
+ document.getElementById('money').textContent=moneyFmt(s.money);
+ [['health','Saúde'],['energy','Disposição'],['stress','Estresse'],['hunger','Fome']].forEach(([k])=>{document.getElementById(k+'Text').textContent=Math.round(s[k])+'/100';document.getElementById(k+'Bar').style.width=Math.max(0,Math.min(100,s[k]))+'%'});
+ document.getElementById('job').textContent=s.job;document.getElementById('date').textContent=dateText(s.date);
+ document.getElementById('clock').textContent=s.date.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+ document.getElementById('location').textContent=s.location;document.getElementById('scene').innerHTML=s.scene;
+ document.getElementById('log').innerHTML=s.log.length?s.log.map(x=>`<div class="entry ${x.type}"><time>${x.time}</time>${escapeHtml(x.text)}</div>`).join(''):'<div class="empty">Suas experiências aparecerão aqui.</div>';
+ document.getElementById('people').innerHTML=s.people.map(p=>`<div class="person"><div><b>${escapeHtml(p.name)}, ${p.age}</b><small>${escapeHtml(p.role)}</small></div><span class="tag">${escapeHtml(p.relation)}</span></div>`).join('');
+ document.getElementById('tasks').innerHTML=s.tasks.map(t=>`<div class="person"><div><b>${escapeHtml(t.text)}</b><small>${escapeHtml(t.when)}</small></div></div>`).join('');
+ renderChoices();
+}
+function escapeHtml(x){return String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function renderChoices(){
+ let opts;
+ if(s.first) opts=[['Tomar café e conversar com a mãe','coffee'],['Procurar vagas de emprego no celular','jobs'],['Mandar mensagem para Pedro','friend'],['Organizar documentos e currículo','cv']];
+ else if(s.location.includes('Trabalho')) opts=[['Continuar trabalhando','work'],['Fazer uma pausa rápida','break'],['Conversar com um colega','colleague'],['Encerrar o expediente (se possível)','leave']];
+ else opts=[['Procurar oportunidades de emprego','jobs'],['Sair para resolver algo na rua','street'],['Descansar um pouco','rest'],['Conversar com alguém da família','family']];
+ document.getElementById('choices').innerHTML=opts.map(([t,a])=>`<button type="button" class="choice" data-action="${a}">${t}</button>`).join('');
+ document.getElementById('choices').querySelectorAll('button[data-action]').forEach(btn=>{
+   btn.addEventListener('click',()=>act(btn.dataset.action));
+ });
+}
+function advance(min){s.date=new Date(s.date.getTime()+min*60000);s.energy=Math.max(0,s.energy-min/90);s.hunger=Math.min(100,s.hunger+min/45);if(s.energy<15)s.stress=Math.min(100,s.stress+2)}
+function setScene(text){s.scene=text}
+function act(a,custom=''){
+ if(a==='coffee'){advance(25);s.energy=Math.min(100,s.energy+8);s.hunger=Math.max(0,s.hunger-18);setScene('Na cozinha, Renata coloca uma caneca na mesa. “Você já pensou no que vai fazer agora que terminou a escola?”, ela pergunta, sem tirar os olhos do celular. O café está quente. Ela parece preocupada com o futuro, mas não está pressionando.');addLog('Tomou café da manhã e conversou com Renata.','good');s.first=false}
+ else if(a==='jobs'){advance(35);setScene('Você passa um tempo pesquisando vagas. Há anúncios para atendente, auxiliar de estoque e vendedor. Alguns pedem experiência; outros aceitam primeiro emprego. Uma loja de materiais esportivos publicou uma vaga de vendedor, salário anunciado de R$ 1.850 mais comissão, escala 6x1. O anúncio pede currículo por e-mail.');addLog('Pesquisou vagas de emprego. Encontrou uma oportunidade de vendedor.','good');s.first=false}
+ else if(a==='friend'){advance(15);setScene('Você abre a conversa com Pedro. A última mensagem é de ontem à noite. Ele responde alguns minutos depois: “E aí, mano! Tô vendo uns cursos aqui, mas ainda não sei o que fazer. E você?”');addLog('Trocou mensagens com Pedro.');s.first=false}
+ else if(a==='cv'){advance(50);setScene('Você separa seus dados e começa a montar um currículo simples, destacando a conclusão do ensino médio e suas habilidades. Ainda falta revisar e encontrar contatos de referência.');addLog('Começou a preparar um currículo.','good');s.first=false}
+ else if(a==='work'){advance(60);s.money+=0;setScene('O expediente segue. As tarefas se acumulam e o tempo passa. Você ainda está aprendendo o ritmo do trabalho.');addLog('Passou mais uma hora no expediente.');}
+ else if(a==='break'){advance(15);s.energy=Math.min(100,s.energy+7);s.stress=Math.max(0,s.stress-4);setScene('Você faz uma pausa curta, bebe água e respira um pouco antes de voltar às atividades.');addLog('Fez uma pausa.','good')}
+ else if(a==='colleague'){advance(10);setScene('Um colega comenta sobre o movimento do dia e pergunta há quanto tempo você trabalha ali. A conversa é breve, mas cordial.');addLog('Conversou com um colega.')}
+ else if(a==='leave'){advance(10);setScene('Você verifica o horário e as tarefas pendentes. Não há como simplesmente abandonar o expediente sem combinar com o responsável.');addLog('Verificou a possibilidade de encerrar o expediente.')}
+ else if(a==='street'){advance(45);s.location='Centro · Curitiba, PR';setScene('O movimento da rua está normal. Carros passam, algumas lojas começam a receber clientes e o trânsito está um pouco carregado. Você está no centro e pode decidir onde ir.');addLog('Saiu de casa e foi ao centro.')}
+ else if(a==='rest'){advance(60);s.energy=Math.min(100,s.energy+24);s.stress=Math.max(0,s.stress-8);setScene('Você consegue descansar por um tempo. O corpo recupera um pouco da disposição, embora o dia continue pela frente.');addLog('Descansou por uma hora.','good')}
+ else if(a==='family'){advance(15);setScene('Na sala, Marcos está olhando algumas notícias no celular. Ele comenta que as despesas da casa aumentaram e pergunta se você já está procurando alguma oportunidade. “Não precisa decidir tudo hoje, mas é bom começar a olhar”, diz.');addLog('Conversou com a família.')}
+ else if(a==='custom'){advance(20);let c=custom.trim();setScene(`Você decide: <strong>${escapeHtml(c)}</strong>. A ação leva algum tempo. O resultado depende da situação, das circunstâncias e das consequências que podem surgir.`);addLog('Ação realizada: '+c);s.first=false;randomEvent()}
+ render();autosave();
+}
+function randomEvent(){
+ // Eventos moderados e ocasionais; não há resultados garantidos.
+ if(Math.random()<.16){
+  const events=[
+   ()=>{setScene(s.scene+'<br><br><strong>Imprevisto:</strong> Renata avisa que a conta de internet veio R$ 35 mais cara do que o esperado. Ela vai conferir a cobrança.');addLog('A família percebeu uma cobrança inesperada de R$ 35 na internet.','event')},
+   ()=>{setScene(s.scene+'<br><br><strong>Mensagem recebida:</strong> Pedro manda: “Depois a gente podia se encontrar. Faz tempo que não conversamos pessoalmente.”');addLog('Pedro sugeriu marcar um encontro.','good')},
+   ()=>{s.stress=Math.min(100,s.stress+5);setScene(s.scene+'<br><br><strong>Pequeno contratempo:</strong> O celular está com pouca bateria e você percebe que esqueceu o carregador.');addLog('Percebeu que está sem carregador; isso causou um pequeno transtorno.','event')}
+  ];events[Math.floor(Math.random()*events.length)]();
+ }
+}
+function submitCustom(e){e.preventDefault();let v=document.getElementById('customInput').value;if(!v.trim())return;act('custom',v);document.getElementById('customInput').value=''}
+document.getElementById('customForm').addEventListener('submit',submitCustom);
+document.getElementById('saveBtn').onclick=()=>{localStorage.setItem('vidaSemRoteiroSave',JSON.stringify(s));alert('Progresso salvo neste navegador!')};
+document.getElementById('loadBtn').onclick=()=>{let v=localStorage.getItem('vidaSemRoteiroSave');if(!v){alert('Nenhum salvamento encontrado.');return}try{s=JSON.parse(v);s.date=new Date(s.date);render();alert('Progresso carregado!')}catch(e){alert('Não foi possível carregar o salvamento.')}};
+document.getElementById('resetBtn').onclick=()=>{if(confirm('Tem certeza de que deseja recomeçar? O progresso atual será perdido se não estiver salvo.')){s=initial();addLog('A simulação começou.');render();autosave()}};
+function autosave(){localStorage.setItem('vidaSemRoteiroAuto',JSON.stringify(s))}
+function start(){document.body.classList.add('game-ready');let saved=localStorage.getItem('vidaSemRoteiroAuto');if(saved){try{s=JSON.parse(saved);s.date=new Date(s.date)}catch(e){s=initial()}}if(!s.log.length)addLog('A simulação começou.','good');render()}
+start();
+</script>
+</body>
+</html>
